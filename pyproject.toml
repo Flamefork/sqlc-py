@@ -1,0 +1,28 @@
+[project]
+name = "sqlc"
+version = "1.30.0"
+
+description = "sqlc binary packaged for Python (via go-to-wheel)"
+authors = [{ name = "Ilia Ablamonov", email = "ilia@flamefork.ru" }]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["sql", "sqlc"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+]
+
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/Flamefork/sqlc-py"
+Repository = "https://github.com/Flamefork/sqlc-py.git"
+Issues = "https://github.com/Flamefork/sqlc-py/issues"
+
+[dependency-groups]
+dev = [
+    "go-to-wheel>=0.2",
+]

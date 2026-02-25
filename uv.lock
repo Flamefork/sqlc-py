@@ -1,0 +1,27 @@
+version = 1
+revision = 3
+requires-python = ">=3.10"
+
+[[package]]
+name = "go-to-wheel"
+version = "0.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7f/c2/c6e468bb65e549913094b40ad64eec4d750d8f47bb9d16184a7462c916b0/go_to_wheel-0.2.tar.gz", hash = "sha256:4c7d3906e1f48e759a3e297570ed9514d9948dd66feb351732e344347a0b9945", size = 17731, upload-time = "2026-02-04T04:28:04.546Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/5a/0cdd968c17240c24760ffb6b2ae6ea2b960ca404eeaa509bf3e1b98b23bf/go_to_wheel-0.2-py3-none-any.whl", hash = "sha256:efc6c9b8b1ea6074cc2679820b5b5d47197ef9172e1169fb332caab5ebbf62c0", size = 11964, upload-time = "2026-02-04T04:28:03.115Z" },
+]
+
+[[package]]
+name = "sqlc"
+version = "1.30.0"
+source = { virtual = "." }
+
+[package.dev-dependencies]
+dev = [
+    { name = "go-to-wheel" },
+]
+
+[package.metadata]
+
+[package.metadata.requires-dev]
+dev = [{ name = "go-to-wheel", specifier = ">=0.2" }]
