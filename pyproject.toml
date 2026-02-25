@@ -3,6 +3,7 @@ name = "sqlc"
 version = "1.30.0"
 
 description = "sqlc binary packaged for Python (via go-to-wheel)"
+readme = "README.md"
 authors = [{ name = "Ilia Ablamonov", email = "ilia@flamefork.ru" }]
 license = "MIT"
 license-files = ["LICENSE"]
