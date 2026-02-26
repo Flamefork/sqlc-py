@@ -8,33 +8,33 @@ jobs:
     permissions:
       contents: read
     strategy:
-      # fail-fast: true
+      fail-fast: true
       matrix:
         include:
-          # - runner: macos-15
-          #   platform: darwin-arm64
-          #   cgo: "1"
-          # - runner: macos-15-intel
-          #   platform: darwin-amd64
-          #   cgo: "1"
-          # - runner: ubuntu-24.04
-          #   platform: linux-amd64
-          #   cgo: "1"
-          # - runner: ubuntu-24.04
-          #   platform: linux-amd64-musl
-          #   cgo: "0"
-          # - runner: ubuntu-24.04-arm
-          #   platform: linux-arm64
-          #   cgo: "1"
-          # - runner: ubuntu-24.04-arm
-          #   platform: linux-arm64-musl
-          #   cgo: "0"
+          - runner: macos-15
+            platform: darwin-arm64
+            cgo: "1"
+          - runner: macos-15-intel
+            platform: darwin-amd64
+            cgo: "1"
+          - runner: ubuntu-24.04
+            platform: linux-amd64
+            cgo: "1"
+          - runner: ubuntu-24.04
+            platform: linux-amd64-musl
+            cgo: "0"
+          - runner: ubuntu-24.04-arm
+            platform: linux-arm64
+            cgo: "1"
+          - runner: ubuntu-24.04-arm
+            platform: linux-arm64-musl
+            cgo: "0"
           - runner: windows-2025
             platform: windows-amd64
             cgo: "1"
-          # - runner: windows-2025
-          #   platform: windows-arm64
-          #   cgo: "0"
+          - runner: windows-2025
+            platform: windows-arm64
+            cgo: "0"
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
