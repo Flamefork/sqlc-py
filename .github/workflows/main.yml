@@ -37,8 +37,6 @@ jobs:
             platform: windows-arm64
             cgo: "0"
     runs-on: ${{ matrix.runner }}
-    env:
-      SQLC_SRC: ${{ runner.temp }}/sqlc-build
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -52,7 +50,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Clone sqlc source
-        run: just sqlc_src="$SQLC_SRC" clone
+        run: just sqlc_src="${{ runner.temp }}/sqlc-build" clone
         shell: bash
 
       - name: Build
@@ -65,7 +63,7 @@ jobs:
             echo "::error::Unexpected version format: '$VERSION'"
             exit 1
           fi
-          uv run python build_wheel.py "$SQLC_SRC" \
+          uv run python build_wheel.py "${{ runner.temp }}/sqlc-build" \
             --name sqlc --version "$VERSION" \
             --entry-point sqlc --platform "${{ matrix.platform }}"
         shell: bash
