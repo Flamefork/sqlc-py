@@ -2,10 +2,11 @@ name: "Main"
 
 on:
   push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
-    if: startsWith(github.event.ref, 'refs/tags/v')
     permissions:
       contents: read
     strategy:
@@ -76,7 +77,6 @@ jobs:
           if-no-files-found: error
 
   publish:
-    if: startsWith(github.event.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     environment:
