@@ -42,7 +42,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
       - name: Install just
-        uses: extractions/setup-just@v3
+        uses: taiki-e/install-action@just
       - name: Install Go
         uses: actions/setup-go@v5
         with:
