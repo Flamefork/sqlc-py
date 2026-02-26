@@ -15,7 +15,14 @@ build platform:
         --platform {{ platform }}
 
 smoke-test:
-    uvx --from dist/*.whl sqlc version
+    #!/usr/bin/env bash
+    set -euo pipefail
+    if ls dist/*.whl | grep -q musllinux; then
+        docker run --rm -v "$PWD:/work" -w /work ghcr.io/astral-sh/uv:python3.13-alpine \
+            uvx --from dist/*.whl sqlc version
+    else
+        uvx --from dist/*.whl sqlc version
+    fi
 
 build-local:
     just clone
