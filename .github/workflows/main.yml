@@ -1,12 +1,19 @@
 name: "Main"
+
 on:
   push:
-    tags:
-      - 'v*'
+
 jobs:
+  build-quick:
+    if: github.ref_type == 'branch'
+    uses: ./.github/workflows/_build-wheel.yml
+    with:
+      runner: ubuntu-24.04
+      platform: linux-amd64
+      cgo: "1"
+      upload_artifact: false
   build:
-    permissions:
-      contents: read
+    if: startsWith(github.ref, 'refs/tags/v')
     strategy:
       fail-fast: true
       matrix:
@@ -35,36 +42,14 @@ jobs:
           - runner: windows-11-arm
             platform: windows-arm64
             cgo: "0"
-    runs-on: ${{ matrix.runner }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Install just
-        uses: taiki-e/install-action@just
-      - name: Install Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 'stable'
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-      - name: Clone sqlc source
-        run: just clone
-        shell: bash
-      - name: Build
-        env:
-          CGO_ENABLED: ${{ matrix.cgo }}
-        run: just build ${{ matrix.platform }}
-        shell: bash
-      - name: Smoke test
-        run: just smoke-test
-        shell: bash
-      - name: Upload wheels
-        uses: actions/upload-artifact@v4
-        with:
-          name: wheels-${{ matrix.platform }}
-          path: dist/*.whl
-          if-no-files-found: error
+    uses: ./.github/workflows/_build-wheel.yml
+    with:
+      runner: ${{ matrix.runner }}
+      platform: ${{ matrix.platform }}
+      cgo: ${{ matrix.cgo }}
+      upload_artifact: true
   publish:
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     environment:

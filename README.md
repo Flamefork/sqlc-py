@@ -4,8 +4,7 @@
 [![main](https://github.com/Flamefork/sqlc-py/actions/workflows/main.yml/badge.svg)](https://github.com/Flamefork/sqlc-py/actions/workflows/main.yml)
 [![PyPI - Version](https://img.shields.io/pypi/v/sqlc)](https://pypi.org/project/sqlc/)
 
-
-[sqlc](https://github.com/sqlc-dev/sqlc) binary packaged for Python. Provides the `sqlc` command-line tool as a pip-installable package, built from the official Go source using [go-to-wheel](https://github.com/nicois/go-to-wheel).
+`sqlc-py` packages the [sqlc](https://github.com/sqlc-dev/sqlc) CLI for Python. It provides the `sqlc` command-line tool as a pip-installable package, built from the official Go source and distributed as platform-specific wheels using [go-to-wheel](https://github.com/nicois/go-to-wheel).
 
 ## Installation
 
@@ -40,7 +39,7 @@ See the [sqlc documentation](https://docs.sqlc.dev/) for full usage details.
 
 ### Why not plain go-to-wheel?
 
-go-to-wheel cross-compiles Go binaries from a single CI host with `CGO_ENABLED=0`. This project uses per-platform matrix builds with `CGO_ENABLED=1` instead, because sqlc depends on [wasilibs/go-pgquery](https://github.com/wasilibs/go-pgquery) — a library that, without CGO, falls back to [wazero](https://github.com/aspect-build/wazero) and doesn't cache compiled WASM binaries, adding ~500ms to every `sqlc` invocation.
+go-to-wheel cross-compiles Go binaries from a single CI host with `CGO_ENABLED=0`. This project instead uses per-platform matrix builds and enables `CGO_ENABLED=1` for most targets. Current exceptions are `linux-*-musl` and `windows-arm64`, which are built with `CGO_ENABLED=0`. The reason for preferring CGO where possible is that sqlc depends on [wasilibs/go-pgquery](https://github.com/wasilibs/go-pgquery) — a library that, without CGO, falls back to [wazero](https://github.com/aspect-build/wazero) and doesn't cache compiled WASM binaries, adding ~500ms to every `sqlc` invocation.
 
 ## Version Mapping
 

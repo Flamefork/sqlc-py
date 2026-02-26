@@ -1,0 +1,53 @@
+name: "Build Wheel"
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        type: string
+        required: true
+      platform:
+        type: string
+        required: true
+      cgo:
+        type: string
+        required: true
+      upload_artifact:
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install just
+        uses: taiki-e/install-action@just
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Clone sqlc source
+        run: just clone
+        shell: bash
+      - name: Build
+        env:
+          CGO_ENABLED: ${{ inputs.cgo }}
+        run: just build ${{ inputs.platform }}
+        shell: bash
+      - name: Smoke test
+        run: just smoke-test
+        shell: bash
+      - name: Upload wheels
+        if: ${{ inputs.upload_artifact }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ inputs.platform }}
+          path: dist/*.whl
+          if-no-files-found: error
