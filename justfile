@@ -17,6 +17,15 @@ build-local: clone
         --platform {{local_platform}}
     rm -rf {{sqlc_src}}
 
+build platform:
+    rm -rf dist
+    uv run python build_wheel.py {{sqlc_src}} \
+        --name sqlc --version {{version}} --entry-point sqlc \
+        --platform {{platform}}
+
+smoke-test:
+    uvx --from dist/*.whl sqlc version
+
 release version:
     uv version {{ version }}
     git add --all
