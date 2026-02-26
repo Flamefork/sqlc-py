@@ -50,8 +50,15 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
+      - name: Set sqlc_src path
+        id: paths
+        run: |
+          RAW="${{ runner.temp }}/sqlc-build"
+          echo "sqlc_src=$(cygpath -u "$RAW" 2>/dev/null || echo "$RAW")" >> "$GITHUB_OUTPUT"
+        shell: bash
+
       - name: Clone sqlc source
-        run: just sqlc_src="${{ runner.temp }}/sqlc-build" clone
+        run: just sqlc_src="${{ steps.paths.outputs.sqlc_src }}" clone
         shell: bash
 
       - name: Build
@@ -64,7 +71,7 @@ jobs:
             echo "::error::Unexpected version format: '$VERSION'"
             exit 1
           fi
-          uv run python build_wheel.py "${{ runner.temp }}/sqlc-build" \
+          uv run python build_wheel.py "${{ steps.paths.outputs.sqlc_src }}" \
             --name sqlc --version "$VERSION" \
             --entry-point sqlc --platform "${{ matrix.platform }}"
         shell: bash
