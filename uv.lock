@@ -13,7 +13,7 @@ wheels = [
 
 [[package]]
 name = "sqlc"
-version = "1.30.0.post13"
+version = "1.30.0.post14"
 source = { virtual = "." }
 
 [package.dev-dependencies]

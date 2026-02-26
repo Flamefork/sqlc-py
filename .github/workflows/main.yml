@@ -31,12 +31,13 @@ jobs:
           # - runner: ubuntu-24.04-arm
           #   platform: linux-arm64-musl
           #   cgo: "1"
-          # - runner: windows-11
+          # - runner: windows-2025
           #   platform: windows-amd64
           #   cgo: "1"
           - runner: windows-11-arm
             platform: windows-arm64
             cgo: "1"
+            cc: "clang --target=aarch64-w64-mingw32"
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
@@ -60,20 +61,17 @@ jobs:
       - name: Toolchain diagnostics
         if: matrix.platform == 'windows-arm64'
         run: |
-          echo "=== uname ==="
-          uname -m || true
-          echo "=== gcc version ==="
-          gcc --version || echo "gcc not found"
-          echo "=== gcc target ==="
-          gcc -dumpmachine || echo "gcc -dumpmachine failed"
-          echo "=== which gcc ==="
-          which gcc || where gcc || echo "cannot locate gcc"
-          echo "=== go env CC ==="
-          go env CC
-          echo "=== go env ==="
-          go env GOOS GOARCH GOARM
-          echo "=== as --version ==="
-          as --version || echo "as not found"
+          echo "=== clang version ==="
+          clang --version || echo "clang not found"
+          echo "=== clang -dumpmachine ==="
+          clang -dumpmachine || echo "clang -dumpmachine failed"
+          echo "=== which clang ==="
+          which clang || where clang || echo "cannot locate clang"
+          echo "=== clang aarch64 target test ==="
+          echo "int main(){return 0;}" > /tmp/test.c
+          clang --target=aarch64-w64-mingw32 -c /tmp/test.c -o /tmp/test.o && echo "aarch64-w64-mingw32: OK" || echo "aarch64-w64-mingw32: FAILED"
+          echo "=== clang supported targets ==="
+          clang --print-targets 2>&1 | head -30
         shell: bash
 
       - name: Clone sqlc source
@@ -83,6 +81,7 @@ jobs:
       - name: Build
         env:
           CGO_ENABLED: ${{ matrix.cgo }}
+          CC: ${{ matrix.cc || '' }}
         run: |
           rm -rf dist
           VERSION=$(uv version | awk '{print $2}')
