@@ -36,4 +36,4 @@ See the [sqlc documentation](https://docs.sqlc.dev/) for full usage details.
 
 ## Version Mapping
 
-Package versions follow sqlc releases — e.g., package version `1.30.0` ships sqlc `v1.30.0`.
+Package versions follow sqlc releases — e.g., package version `1.30.0` ships sqlc `v1.30.0`. Packaging-only fixes use PEP 440 post releases: `1.30.0.post1`, `1.30.0.post2`, etc.

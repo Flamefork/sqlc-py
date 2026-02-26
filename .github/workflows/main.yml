@@ -4,14 +4,41 @@ on:
   push:
 
 jobs:
-  publish:
+  build:
     if: startsWith(github.event.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    environment:
-      name: pypi
     permissions:
-      id-token: write
       contents: read
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - runner: macos-latest
+            platform: darwin-arm64
+            cgo: "1"
+          - runner: macos-13
+            platform: darwin-amd64
+            cgo: "1"
+          - runner: ubuntu-latest
+            platform: linux-amd64
+            cgo: "1"
+          - runner: ubuntu-latest
+            platform: linux-amd64-musl
+            cgo: "0"
+          - runner: ubuntu-24.04-arm
+            platform: linux-arm64
+            cgo: "1"
+          - runner: ubuntu-24.04-arm
+            platform: linux-arm64-musl
+            cgo: "0"
+          - runner: windows-latest
+            platform: windows-amd64
+            cgo: "1"
+          - runner: windows-latest
+            platform: windows-arm64
+            cgo: "0"
+    runs-on: ${{ matrix.runner }}
+    env:
+      SQLC_SRC: ${{ runner.temp }}/sqlc-build
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -23,7 +50,52 @@ jobs:
           go-version: 'stable'
       - name: Install uv
         uses: astral-sh/setup-uv@v6
+
+      - name: Clone sqlc source
+        run: just sqlc_src="$SQLC_SRC" clone
+        shell: bash
+
       - name: Build
-        run: just build
+        env:
+          CGO_ENABLED: ${{ matrix.cgo }}
+        run: |
+          rm -rf dist
+          VERSION=$(uv version | awk '{print $2}')
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(\.post[0-9]+)?$ ]]; then
+            echo "::error::Unexpected version format: '$VERSION'"
+            exit 1
+          fi
+          uv run python build_wheel.py "$SQLC_SRC" \
+            --name sqlc --version "$VERSION" \
+            --entry-point sqlc --platform "${{ matrix.platform }}"
+        shell: bash
+
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.platform }}
+          path: dist/*.whl
+          if-no-files-found: error
+
+  publish:
+    if: startsWith(github.event.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Download all wheels
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: wheels-*
+          merge-multiple: true
       - name: Publish
-        run: uv publish
+        run: uv publish dist/*.whl
