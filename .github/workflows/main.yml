@@ -13,32 +13,29 @@ jobs:
       # fail-fast: true
       matrix:
         include:
-          - runner: macos-15
-            platform: darwin-arm64
-            cgo: "1"
-          - runner: macos-15-intel
-            platform: darwin-amd64
-            cgo: "1"
-          - runner: ubuntu-24.04
-            platform: linux-amd64
-            cgo: "1"
-          - runner: ubuntu-24.04
-            platform: linux-amd64-musl
-            # cgo: "0"
-            cgo: "1"
-          - runner: ubuntu-24.04-arm
-            platform: linux-arm64
-            cgo: "1"
-          - runner: ubuntu-24.04-arm
-            platform: linux-arm64-musl
-            # cgo: "0"
-            cgo: "1"
-          - runner: windows-latest
-            platform: windows-amd64
-            cgo: "1"
+          # - runner: macos-15
+          #   platform: darwin-arm64
+          #   cgo: "1"
+          # - runner: macos-15-intel
+          #   platform: darwin-amd64
+          #   cgo: "1"
+          # - runner: ubuntu-24.04
+          #   platform: linux-amd64
+          #   cgo: "1"
+          # - runner: ubuntu-24.04
+          #   platform: linux-amd64-musl
+          #   cgo: "1"
+          # - runner: ubuntu-24.04-arm
+          #   platform: linux-arm64
+          #   cgo: "1"
+          # - runner: ubuntu-24.04-arm
+          #   platform: linux-arm64-musl
+          #   cgo: "1"
+          # - runner: windows-11
+          #   platform: windows-amd64
+          #   cgo: "1"
           - runner: windows-11-arm
             platform: windows-arm64
-            # cgo: "0"
             cgo: "1"
     runs-on: ${{ matrix.runner }}
     steps:
@@ -58,6 +55,25 @@ jobs:
         run: |
           RAW="${{ runner.temp }}/sqlc-build"
           echo "sqlc_src=$(cygpath -u "$RAW" 2>/dev/null || echo "$RAW")" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Toolchain diagnostics
+        if: matrix.platform == 'windows-arm64'
+        run: |
+          echo "=== uname ==="
+          uname -m || true
+          echo "=== gcc version ==="
+          gcc --version || echo "gcc not found"
+          echo "=== gcc target ==="
+          gcc -dumpmachine || echo "gcc -dumpmachine failed"
+          echo "=== which gcc ==="
+          which gcc || where gcc || echo "cannot locate gcc"
+          echo "=== go env CC ==="
+          go env CC
+          echo "=== go env ==="
+          go env GOOS GOARCH GOARM
+          echo "=== as --version ==="
+          as --version || echo "as not found"
         shell: bash
 
       - name: Clone sqlc source
