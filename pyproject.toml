@@ -1,6 +1,6 @@
 [project]
 name = "sqlc"
-version = "1.30.0.post2"
+version = "1.30.0.post3"
 
 description = "sqlc binary packaged for Python (via go-to-wheel)"
 readme = "README.md"
