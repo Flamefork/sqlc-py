@@ -21,15 +21,15 @@ jobs:
     runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install just
         uses: taiki-e/install-action@just
       - name: Install Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 'stable'
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v8.1.0
       - name: Clone sqlc source
         run: just clone
         shell: bash
@@ -41,7 +41,7 @@ jobs:
         shell: bash
       - name: Upload wheels
         if: ${{ inputs.upload_artifact }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: wheels-${{ inputs.platform }}
           path: dist/*.whl
