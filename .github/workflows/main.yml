@@ -9,8 +9,7 @@ jobs:
     uses: ./.github/workflows/_build-wheel.yml
     with:
       runner: ubuntu-24.04
-      platform: linux-amd64
-      cgo: "1"
+      platform: manylinux_2_17_x86_64
       upload_artifact: false
   build:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -19,34 +18,25 @@ jobs:
       matrix:
         include:
           - runner: macos-15
-            platform: darwin-arm64
-            cgo: "1"
+            platform: macosx_11_0_arm64
           - runner: macos-15-intel
-            platform: darwin-amd64
-            cgo: "1"
+            platform: macosx_10_9_x86_64
           - runner: ubuntu-24.04
-            platform: linux-amd64
-            cgo: "1"
+            platform: manylinux_2_17_x86_64
           - runner: ubuntu-24.04
-            platform: linux-amd64-musl
-            cgo: "0"
+            platform: musllinux_1_2_x86_64
           - runner: ubuntu-24.04-arm
-            platform: linux-arm64
-            cgo: "1"
+            platform: manylinux_2_17_aarch64
           - runner: ubuntu-24.04-arm
-            platform: linux-arm64-musl
-            cgo: "0"
+            platform: musllinux_1_2_aarch64
           - runner: windows-2025
-            platform: windows-amd64
-            cgo: "1"
+            platform: win_amd64
           - runner: windows-11-arm
-            platform: windows-arm64
-            cgo: "0"
+            platform: win_arm64
     uses: ./.github/workflows/_build-wheel.yml
     with:
       runner: ${{ matrix.runner }}
       platform: ${{ matrix.platform }}
-      cgo: ${{ matrix.cgo }}
       upload_artifact: true
   publish:
     if: startsWith(github.ref, 'refs/tags/v')

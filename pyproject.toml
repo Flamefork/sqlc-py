@@ -2,7 +2,7 @@
 name = "sqlc"
 version = "1.30.0.post18"
 
-description = "sqlc binary packaged for Python (via go-to-wheel)"
+description = "sqlc binary packaged for Python"
 readme = "README.md"
 authors = [{ name = "Ilia Ablamonov", email = "ilia@flamefork.ru" }]
 license = "MIT"
@@ -22,7 +22,3 @@ Homepage = "https://github.com/Flamefork/sqlc-py"
 Repository = "https://github.com/Flamefork/sqlc-py.git"
 Issues = "https://github.com/Flamefork/sqlc-py/issues"
 
-[dependency-groups]
-dev = [
-    "go-to-wheel>=0.2",
-]

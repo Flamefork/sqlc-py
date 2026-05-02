@@ -24,11 +24,6 @@ smoke-test:
         uvx --from dist/*.whl sqlc version
     fi
 
-build-local:
-    just clone
-    CGO_ENABLED=1 just build "$(uname -s | tr A-Z a-z)-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')"
-    just clean
-
 clean:
     rm -rf {{ sqlc_src }}
 

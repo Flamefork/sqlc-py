@@ -9,9 +9,6 @@ on:
       platform:
         type: string
         required: true
-      cgo:
-        type: string
-        required: true
       upload_artifact:
         type: boolean
         required: false
@@ -37,8 +34,6 @@ jobs:
         run: just clone
         shell: bash
       - name: Build
-        env:
-          CGO_ENABLED: ${{ inputs.cgo }}
         run: just build ${{ inputs.platform }}
         shell: bash
       - name: Smoke test
