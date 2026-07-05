@@ -4,5 +4,5 @@ requires-python = ">=3.10"
 
 [[package]]
 name = "sqlc"
-version = "1.30.0.post19"
+version = "1.31.1"
 source = { virtual = "." }
